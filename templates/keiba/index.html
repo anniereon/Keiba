@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><title>Race Detail CSV 出力</title></head>
+<head><meta charset="utf-8"><title>機械学習INPUTデータ作成</title></head>
 <body>
-  <h1>期間指定 CSV 出力</h1>
-  <form method="get">
-    {{ form.as_p }}
-    <button type="submit">実行</button>
-  </form>
+  <h1>機械学習INPUTデータ作成</h1>
+    <form method="get" action="">
+      <label>
+        期間：
+        {{ form.start_date }} から
+        {{ form.end_date }} まで
+      </label>
+      <br>  <!-- ここに改行タグ -->
+      <button type="submit">実行</button>
+    </form>
 </body>
 </html>
+
