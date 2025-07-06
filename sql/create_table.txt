@@ -1,0 +1,62 @@
+CREATE TABLE course (
+    course_id VARCHAR(4) PRIMARY KEY,     -- コースID
+    racecourse VARCHAR(20),           -- 競馬場
+    surface_type VARCHAR(10),              -- グラウンド（芝・ダートなど）
+    distance INT,                          -- 距離（メートルなど）
+    direction VARCHAR(10)            -- 左右（left-handed / right-handed など）
+);
+select * from course;
+
+CREATE TABLE horse (
+    horse_id VARCHAR(10) PRIMARY KEY,   -- 馬ID（主キー）
+    horse_name VARCHAR(50)             -- 馬の名前
+);
+select * from horse;
+
+CREATE TABLE jockey (
+    jockey_id VARCHAR(5) PRIMARY KEY,   -- 騎手ID（主キー）
+    jockey_name VARCHAR(50)             -- 騎手名
+);
+select * from jockey;
+
+CREATE TABLE bet_type (
+    bet_type_id VARCHAR(3) PRIMARY KEY,    -- 馬券種ID（例: WIN, EXA）
+    bet_type_name VARCHAR(10)               -- 馬券種名（例: 単勝, 馬単）
+);
+select * from bet_type;
+
+CREATE TABLE race (
+    race_id VARCHAR(9) PRIMARY KEY,
+    race_date DATE,
+    num_horses INT,
+    course_id VARCHAR(4),
+    race_number INT,
+    weather VARCHAR(2),
+    track_condition VARCHAR(2),
+    note TEXT,
+    
+    FOREIGN KEY (course_id) REFERENCES course(course_id)
+);
+select * from race;
+
+CREATE TABLE race_detail (
+    race_id VARCHAR(9),
+    horse_id VARCHAR(10),
+    jockey_id VARCHAR(5),
+    horse_number INT,
+    frame_number INT,
+    style_prediction TEXT,
+    odds decimal(5, 1),
+    popularity INT,
+    finish_rank INT,
+    time_index INT,
+    note TEXT,
+    PRIMARY KEY (race_id,  horse_number),
+    FOREIGN KEY (race_id) REFERENCES race(race_id),
+    FOREIGN KEY (horse_id) REFERENCES horse(horse_id),
+    FOREIGN KEY (jockey_id) REFERENCES jockey(jockey_id)
+);
+select * from race_detail;
+
+
+
