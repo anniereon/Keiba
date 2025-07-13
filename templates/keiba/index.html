@@ -14,13 +14,13 @@
     {% csrf_token %}
     <input type="hidden" name="action" value="export">
     <fieldset>
-      <legend>特徴量作成</legend>
+      <legend>機械学習INPUTデータ作成</legend>
       <label>
         期間：
         {{ feature_form.start_date }} から
         {{ feature_form.end_date }} まで
       </label><br>
-      <button type="submit">CSVエクスポート</button>
+      <button type="submit">実行</button>
     </fieldset>
   </form>
 
@@ -31,9 +31,9 @@
     {% csrf_token %}
     <input type="hidden" name="action" value="aggregate">
     <fieldset>
-      <legend>統計集計</legend>
+      <legend>勝率統計作成</legend>
       {{ stats_form.as_p }}
-      <button type="submit">統計集計実行</button>
+      <button type="submit">実行</button>
     </fieldset>
   </form>
 
