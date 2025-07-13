@@ -3,7 +3,7 @@
 import pandas as pd
 from .race_analysis import get_time_index_average, get_jockey_place_rate
 
-def build_features(race_details, race_date_map, recent_n=10):
+def build_features(race_details, race_date_map, recent_n):
     rows = []
 
     for rd in race_details:

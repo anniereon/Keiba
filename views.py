@@ -1,15 +1,15 @@
 from django.shortcuts import render
 
-from .forms import DateRangeForm
-from .services.keiba import race_repository, feature_engineering
-from .services.csv.export import create_csv_response_from_df
+from keiba.forms import DateRangeForm
+from keiba.services.keiba import race_repository, feature_engineering
+from keiba.services.csv.export import create_csv_response_from_df
 
 def index(request):
     form = DateRangeForm(request.GET or None)
     if form.is_valid():
         sd = form.cleaned_data['start_date']
         ed = form.cleaned_data['end_date']
-        recent_n = 10
+        recent_n = 3
 
         race_ids = race_repository.get_race_ids_between(sd, ed)
         race_details = race_repository.get_race_details(race_ids)

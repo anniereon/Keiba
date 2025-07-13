@@ -3,7 +3,7 @@
 import pandas as pd
 from django.http import HttpResponse
 
-def create_csv_response_from_df(df, filename="output.csv"):
+def create_csv_response_from_df(df, filename="input.csv"):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 

@@ -1,6 +1,6 @@
 # services/keiba/race_repository.py
 
-from ...models import Race, RaceDetail
+from keiba.models import Race, RaceDetail
 
 def get_race_ids_between(start_date, end_date):
     return Race.objects.filter(
