@@ -71,3 +71,24 @@ class RaceDetail(models.Model):
         managed = False
         db_table = 'race_detail'
         unique_together = (('race', 'horse_number'),)
+
+        # models.py
+
+class RaceStatistics(models.Model):
+    stat_id = models.BigAutoField(primary_key=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    num_horses = models.IntegerField()
+    race_number = models.IntegerField()
+    weather = models.CharField(max_length=2, blank=True, null=True)
+    horse_number = models.IntegerField()
+    frame_number = models.IntegerField()
+    style_prediction = models.TextField(blank=True, null=True)
+    sample_size = models.IntegerField()
+    num_place = models.IntegerField()
+    num_win = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'race_statistics'
