@@ -58,5 +58,21 @@ CREATE TABLE race_detail (
 );
 select * from race_detail;
 
-
+CREATE TABLE race_statistics (
+    stat_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    course_id VARCHAR(4),
+    num_horses INT,
+    race_number INT,
+    weather VARCHAR(2),
+    horse_number INT,
+    frame_number INT,
+    style_prediction TEXT,
+    sample_size INT,
+    num_place INT,
+    num_win INT,
+    FOREIGN KEY (course_id) REFERENCES course(course_id)
+);
+select * from race_statistics;
 

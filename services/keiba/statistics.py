@@ -13,7 +13,7 @@ def aggregate_statistics(filters):
         course_qs = course_qs.filter(direction=filters["direction"])
 
     course_ids = course_qs.values_list("course_id", flat=True)
-    course = course_qs.get() if course_qs.count() == 1 else None  # ← ここが修正ポイント
+    course = course_qs.get() if course_qs.count() == 1 else None  # courseが1つに特定できたときのみ設定
 
     # Race 絞り込み
     race_qs = Race.objects.filter(
@@ -46,20 +46,33 @@ def aggregate_statistics(filters):
     if sample_size == 0:
         return None  # 集計対象が存在しない
 
-    # Insert または Update（stat_id は自動採番）
-    stats_obj = RaceStatistics.objects.create(
-        start_date=filters['start_date'],
-        end_date=filters['end_date'],
-        course=course,  # ← 条件が特定できなければ null
-        num_horses=filters.get('num_horses'),
-        race_number=filters.get('race_number'),
-        weather=filters.get('weather'),
-        horse_number=filters.get('horse_number'),
-        frame_number=filters.get('frame_number'),
-        style_prediction=filters.get('style_prediction'),
-        sample_size=sample_size,
-        num_place=num_place,
-        num_win=num_win,
-    )
+    # レコードの存在確認（course=None の場合も含む）
+    lookup = {
+        'start_date': filters['start_date'],
+        'end_date': filters['end_date'],
+        'course': course,
+        'num_horses': filters.get('num_horses'),
+        'race_number': filters.get('race_number'),
+        'weather': filters.get('weather'),
+        'horse_number': filters.get('horse_number'),
+        'frame_number': filters.get('frame_number'),
+        'style_prediction': filters.get('style_prediction'),
+    }
 
-    return stats_obj, True
+    existing_qs = RaceStatistics.objects.filter(**lookup)
+
+    if existing_qs.exists():
+        existing_qs.update(
+            sample_size=sample_size,
+            num_place=num_place,
+            num_win=num_win,
+        )
+        return existing_qs.first(), False  # update
+    else:
+        stats_obj = RaceStatistics.objects.create(
+            **lookup,
+            sample_size=sample_size,
+            num_place=num_place,
+            num_win=num_win,
+        )
+        return stats_obj, True  # insert
