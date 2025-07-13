@@ -1,33 +1,44 @@
 {% load static %}
 <!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
-  <title>機械学習INPUTデータ作成・勝率統計集計</title>
+  <title>機械学習INPUTデータ作成</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
   <h1>機械学習INPUTデータ作成</h1>
 
-  <form method="get" action="">
-    <h2>特徴量CSV出力</h2>
-    <label>
-      期間：
-      {{ feature_form.start_date }} から {{ feature_form.end_date }} まで
-    </label>
-    <br>
-    <button type="submit" name="action" value="export">CSV出力</button>
+  <!-- 機能A: 特徴量CSVエクスポート -->
+  <form method="post" action="">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="export">
+    <fieldset>
+      <legend>特徴量作成</legend>
+      <label>
+        期間：
+        {{ feature_form.start_date }} から
+        {{ feature_form.end_date }} まで
+      </label><br>
+      <button type="submit">CSVエクスポート</button>
+    </fieldset>
   </form>
 
   <hr>
 
-  <form method="get" action="">
-    <h2>勝率統計集計</h2>
-    {{ stats_form.as_p }}
-    <button type="submit" name="action" value="aggregate">統計集計</button>
+  <!-- 機能B: 勝率集計 -->
+  <form method="post" action="">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="aggregate">
+    <fieldset>
+      <legend>統計集計</legend>
+      {{ stats_form.as_p }}
+      <button type="submit">統計集計実行</button>
+    </fieldset>
   </form>
 
   {% if result %}
-    <p>統計集計完了：サンプル数 {{ result.0.sample_size }} 件（{% if result.1 %}新規作成{% else %}更新{% endif %}）</p>
+    <p>集計結果（{{ result.sample_size }} 件）を保存しました。</p>
   {% endif %}
 </body>
 </html>
