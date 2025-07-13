@@ -1,8 +1,12 @@
 from django.shortcuts import render
-
 from keiba.forms import DateRangeForm
-from keiba.services.keiba_logic import get_race_ids_between, get_race_details, get_race_date_map, \
-    create_csv_response_from_df, build_output_df, create_csv_response_from_df
+from .services.keiba_logic import (
+    get_race_ids_between,
+    get_race_details,
+    get_race_date_map,
+    build_output_df
+)
+from .services.csv_service import create_csv_response_from_df
 
 def index(request):
     form = DateRangeForm(request.GET or None)

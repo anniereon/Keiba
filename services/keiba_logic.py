@@ -90,10 +90,3 @@ def get_jockey_win_place_show_rate(jockey_id, race_date, recent_race_count):
 
     top_3 = sum(1 for rd in past_details if rd.finish_rank and rd.finish_rank <= 3)
     return round(top_3 / total, 3)  # 小数第3位で丸める
-
-def create_csv_response_from_df(df):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="input.csv"'
-    df = df[['race_id', 'horse_number', 'time_index_average', 'jockey_place_rate']]
-    df.to_csv(path_or_buf=response, index=False)
-    return response
