@@ -4,7 +4,7 @@ from keiba.services.keiba import race_repository, feature_engineering, statistic
 from keiba.services.csv.export import create_csv_response_from_df
 
 def index(request):
-    action = request.POST.get("action")  # ← GET → POST に変更
+    action = request.POST.get("action")
 
     feature_form = DateRangeForm(request.POST if action == "export" else None)
     stats_form = StatisticsFilterForm(request.POST if action == "aggregate" else None)
@@ -25,12 +25,6 @@ def index(request):
 
     elif action == "aggregate" and stats_form.is_valid():
         filters = stats_form.cleaned_data
-        # 空文字を None に変換（weather, style_prediction だけ）
-        if filters.get("weather") == "":
-            filters["weather"] = None
-        if filters.get("style_prediction") == "":
-            filters["style_prediction"] = None
-
         result = statistics.aggregate_statistics(filters)
 
     return render(request, 'keiba/index.html', {

@@ -18,20 +18,22 @@
         <legend>機械学習INPUTデータ作成</legend>
         <label>
           期間：
-          {{ feature_form.start_date }} から
-          {{ feature_form.end_date }} まで
+          {{ feature_form.start_date }} から {{ feature_form.end_date }} まで
         </label><br>
         <button type="submit">実行</button>
       </fieldset>
     </form>
 
-    <!-- 機能B: 勝率集計 -->
+    <!-- 機能B: 勝率集計（期間のみ） -->
     <form method="post" action="">
       {% csrf_token %}
       <input type="hidden" name="action" value="aggregate">
       <fieldset>
         <legend>勝率統計作成</legend>
-        {{ stats_form.as_p }}
+        <label>
+          期間：
+          {{ stats_form.start_date }} から {{ stats_form.end_date }} まで
+        </label><br>
         <button type="submit">実行</button>
       </fieldset>
     </form>
