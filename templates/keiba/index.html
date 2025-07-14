@@ -9,33 +9,33 @@
 <body>
   <h1>機械学習INPUTデータ作成</h1>
 
-  <!-- 機能A: 特徴量CSVエクスポート -->
-  <form method="post" action="">
-    {% csrf_token %}
-    <input type="hidden" name="action" value="export">
-    <fieldset>
-      <legend>機械学習INPUTデータ作成</legend>
-      <label>
-        期間：
-        {{ feature_form.start_date }} から
-        {{ feature_form.end_date }} まで
-      </label><br>
-      <button type="submit">実行</button>
-    </fieldset>
-  </form>
+  <div class="form-container">
+    <!-- 機能A: 特徴量CSVエクスポート -->
+    <form method="post" action="">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="export">
+      <fieldset>
+        <legend>機械学習INPUTデータ作成</legend>
+        <label>
+          期間：
+          {{ feature_form.start_date }} から
+          {{ feature_form.end_date }} まで
+        </label><br>
+        <button type="submit">実行</button>
+      </fieldset>
+    </form>
 
-  <hr>
-
-  <!-- 機能B: 勝率集計 -->
-  <form method="post" action="">
-    {% csrf_token %}
-    <input type="hidden" name="action" value="aggregate">
-    <fieldset>
-      <legend>勝率統計作成</legend>
-      {{ stats_form.as_p }}
-      <button type="submit">実行</button>
-    </fieldset>
-  </form>
+    <!-- 機能B: 勝率集計 -->
+    <form method="post" action="">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="aggregate">
+      <fieldset>
+        <legend>勝率統計作成</legend>
+        {{ stats_form.as_p }}
+        <button type="submit">実行</button>
+      </fieldset>
+    </form>
+  </div>
 
   {% if result %}
     <p>集計結果（{{ result.sample_size }} 件）を保存しました。</p>
