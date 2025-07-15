@@ -6,7 +6,7 @@ def aggregate_statistics(filters):
 
     details = RaceDetail.objects.filter(
         race__race_date__range=(start, end)
-    ).select_related("race")  # race__course は使わない
+    ).select_related("race")
 
     stats_map = {}
 
@@ -15,10 +15,10 @@ def aggregate_statistics(filters):
             d.race.course_id,
             d.race.num_horses,
             d.race.race_number,
-            d.race.weather,
+            d.race.weather_id,         # ← 修正
             d.horse_number,
             d.frame_number,
-            d.style_prediction,
+            d.style_id,                # ← 修正
         )
 
         if key not in stats_map:
@@ -35,7 +35,7 @@ def aggregate_statistics(filters):
             stats_map[key]["num_win"] += 1
 
     for key, values in stats_map.items():
-        course_id, num_horses, race_number, weather, horse_number, frame_number, style_prediction = key
+        course_id, num_horses, race_number, weather_id, horse_number, frame_number, style_id = key
 
         RaceStatistics.objects.update_or_create(
             start_date=start,
@@ -43,10 +43,10 @@ def aggregate_statistics(filters):
             course_id=course_id,
             num_horses=num_horses,
             race_number=race_number,
-            weather=weather,
+            weather_id=weather_id,     # ← 修正
             horse_number=horse_number,
             frame_number=frame_number,
-            style_prediction=style_prediction,
+            style_id=style_id,         # ← 修正
             defaults={
                 "sample_size": values["sample_size"],
                 "num_place": values["num_place"],

@@ -13,13 +13,39 @@ def index(request):
     if action == "export" and feature_form.is_valid():
         sd = feature_form.cleaned_data['start_date']
         ed = feature_form.cleaned_data['end_date']
-        recent_n = 3
 
         race_ids = race_repository.get_race_ids_between(sd, ed)
         race_details = race_repository.get_race_details(race_ids)
         race_date_map = race_repository.get_race_date_map(race_details)
 
-        df = feature_engineering.build_features(race_details, race_date_map, recent_n)
+        # 特徴量のリストを取得
+        feature_spec_list = []
+        index = 0
+        while True:
+            f_type = request.POST.get(f"features[{index}][type]")
+            if not f_type:
+                break
+
+            feature_spec = {"type": f_type}
+
+            if f_type in ["time_index_average", "jockey_place_rate"]:
+                param = request.POST.get(f"features[{index}][param]")
+                if param:
+                    feature_spec["param"] = int(param)
+
+            elif f_type == "conditional_place_rate":
+                conditions = request.POST.getlist(f"features[{index}][conditions][]")
+                if conditions:
+                    feature_spec["conditions"] = conditions
+
+            feature_spec_list.append(feature_spec)
+            index += 1
+
+        df = feature_engineering.build_features(
+            race_details=race_details,
+            race_date_map=race_date_map,
+            feature_spec_list=feature_spec_list
+        )
 
         return create_csv_response_from_df(df)
 

@@ -8,9 +8,21 @@ def get_race_ids_between(start_date, end_date):
     ).values_list('race_id', flat=True)
 
 def get_race_details(race_ids):
+    # 必要なフィールドを拡張（weather_id, style_id など）
     return RaceDetail.objects.filter(
         race_id__in=race_ids
-    ).values('race_id', 'horse_id', 'horse_number', 'jockey_id')
+    ).select_related('race').values(
+        'race_id',
+        'horse_id',
+        'horse_number',
+        'jockey_id',
+        'frame_number',
+        'style_id',              # ← 追加
+        'race__course_id',
+        'race__num_horses',
+        'race__race_number',
+        'race__weather_id',      # ← 追加
+    )
 
 def get_race_date_map(race_details):
     race_ids = [rd['race_id'] for rd in race_details]

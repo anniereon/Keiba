@@ -7,6 +7,12 @@ def create_csv_response_from_df(df, filename="input.csv"):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    df = df[['race_id', 'horse_number', 'time_index_average', 'jockey_place_rate']]
+    print("DF Columns:", df.columns.tolist())  # DEBUG: 確認用
+
+    # race_id と horse_number は常に出力、それ以外は全列
+    base_cols = ['race_id', 'horse_number']
+    other_cols = [col for col in df.columns if col not in base_cols]
+    df = df[base_cols + other_cols]
+
     df.to_csv(response, index=False)
     return response
