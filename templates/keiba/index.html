@@ -5,6 +5,97 @@
   <meta charset="utf-8">
   <title>機械学習INPUTデータ作成</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <style>
+    .feature-row {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .param-box input[type="number"] {
+      width: 60px;
+    }
+
+    .param-box label {
+      margin-right: 10px;
+    }
+
+    .form-container {
+      margin-top: 20px;
+    }
+  </style>
+
+  <script>
+    function addFeatureRow() {
+      const container = document.getElementById("feature-container");
+      const index = container.children.length;
+
+      const row = document.createElement("div");
+      row.className = "feature-row";
+
+      row.innerHTML = `
+        <input type="checkbox" class="delete-check" />
+        <select name="features[${index}][type]" onchange="onFeatureTypeChange(this, ${index})">
+          <option value="">-- 特徴量を選択 --</option>
+          <option value="time_index_average">直近タイム指数平均</option>
+          <option value="jockey_place_rate">騎手複勝率</option>
+          <option value="conditional_place_rate">条件勝率</option>
+        </select>
+        <span id="param-${index}" class="param-box"></span>
+      `;
+
+      container.appendChild(row);
+    }
+
+    function deleteSelectedRows() {
+      const container = document.getElementById("feature-container");
+      const checks = container.querySelectorAll(".delete-check");
+
+      checks.forEach((chk) => {
+        if (chk.checked) {
+          container.removeChild(chk.closest(".feature-row"));
+        }
+      });
+    }
+
+    function onFeatureTypeChange(select, index) {
+      const paramContainer = document.getElementById(`param-${index}`);
+      const value = select.value;
+      paramContainer.innerHTML = "";
+
+      if (value === "time_index_average" || value === "jockey_place_rate") {
+        paramContainer.innerHTML = `
+          <input type="number" name="features[${index}][param]" min="1" placeholder="回数">
+        `;
+      }
+
+      if (value === "conditional_place_rate") {
+        const options = [
+          { key: "course_id", label: "コースID" },
+          { key: "num_horses", label: "頭数" },
+          { key: "race_number", label: "レース番号" },
+          { key: "weather", label: "天気" },
+          { key: "horse_number", label: "馬番" },
+          { key: "frame_number", label: "枠番" },
+          { key: "style_prediction", label: "脚質予測" }
+        ];
+
+        paramContainer.innerHTML = options.map(opt => `
+          <label style="display: inline-block; margin-right: 10px;">
+            <input type="checkbox" name="features[${index}][conditions][]" value="${opt.key}">
+            ${opt.label}
+          </label>
+        `).join('');
+      }
+    }
+
+    // 初期表示時に1行追加
+    window.addEventListener("DOMContentLoaded", () => {
+      addFeatureRow();
+    });
+  </script>
 </head>
 <body>
   <h1>機械学習INPUTデータ作成</h1>
@@ -16,11 +107,21 @@
       <input type="hidden" name="action" value="export">
       <fieldset>
         <legend>機械学習INPUTデータ作成</legend>
+
         <label>
           期間：
           {{ feature_form.start_date }} から {{ feature_form.end_date }} まで
-        </label><br>
-        <button type="submit">実行</button>
+        </label><br><br>
+
+        <!-- ▼ ボタン群 -->
+        <div>
+          <button type="button" onclick="addFeatureRow()">追加</button>
+          <button type="button" onclick="deleteSelectedRows()">削除</button>
+          <button type="submit">実行</button>
+        </div><br>
+
+        <!-- ▼ 特徴量入力欄 -->
+        <div id="feature-container" style="margin-bottom: 10px;"></div>
       </fieldset>
     </form>
 
