@@ -14,11 +14,11 @@ def aggregate_statistics(filters):
         key = (
             d.race.course_id,
             d.race.num_horses,
-            d.race.race_number,
-            d.race.weather_id,         # ← 修正
+            # d.race.race_number,   このフィールドを考慮するとrace_statisticsのレコードが多すぎるので除外
+            # d.race.weather_id,    このフィールドを考慮するとrace_statisticsのレコードが多すぎるので除外
             d.horse_number,
             d.frame_number,
-            d.style_id,                # ← 修正
+            d.style_id,
         )
 
         if key not in stats_map:
@@ -35,18 +35,18 @@ def aggregate_statistics(filters):
             stats_map[key]["num_win"] += 1
 
     for key, values in stats_map.items():
-        course_id, num_horses, race_number, weather_id, horse_number, frame_number, style_id = key
+        course_id, num_horses, horse_number, frame_number, style_id = key
 
         RaceStatistics.objects.update_or_create(
             start_date=start,
             end_date=end,
             course_id=course_id,
             num_horses=num_horses,
-            race_number=race_number,
-            weather_id=weather_id,     # ← 修正
+            # race_number=race_number,
+            # weather_id=weather_id,
             horse_number=horse_number,
             frame_number=frame_number,
-            style_id=style_id,         # ← 修正
+            style_id=style_id,
             defaults={
                 "sample_size": values["sample_size"],
                 "num_place": values["num_place"],
