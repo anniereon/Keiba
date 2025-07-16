@@ -27,75 +27,8 @@
     }
   </style>
 
-  <script>
-    function addFeatureRow() {
-      const container = document.getElementById("feature-container");
-      const index = container.children.length;
-
-      const row = document.createElement("div");
-      row.className = "feature-row";
-
-      row.innerHTML = `
-        <input type="checkbox" class="delete-check" />
-        <select name="features[${index}][type]" onchange="onFeatureTypeChange(this, ${index})">
-          <option value="">-- 特徴量を選択 --</option>
-          <option value="time_index_average">直近タイム指数平均</option>
-          <option value="jockey_place_rate">騎手複勝率</option>
-          <option value="conditional_place_rate">条件勝率</option>
-        </select>
-        <span id="param-${index}" class="param-box"></span>
-      `;
-
-      container.appendChild(row);
-    }
-
-    function deleteSelectedRows() {
-      const container = document.getElementById("feature-container");
-      const checks = container.querySelectorAll(".delete-check");
-
-      checks.forEach((chk) => {
-        if (chk.checked) {
-          container.removeChild(chk.closest(".feature-row"));
-        }
-      });
-    }
-
-    function onFeatureTypeChange(select, index) {
-      const paramContainer = document.getElementById(`param-${index}`);
-      const value = select.value;
-      paramContainer.innerHTML = "";
-
-      if (value === "time_index_average" || value === "jockey_place_rate") {
-        paramContainer.innerHTML = `
-          <input type="number" name="features[${index}][param]" min="1" placeholder="回数">
-        `;
-      }
-
-      if (value === "conditional_place_rate") {
-        const options = [
-          { key: "course_id", label: "コースID" },
-          { key: "num_horses", label: "頭数" },
-          { key: "race_number", label: "レース番号" },
-          { key: "weather", label: "天気" },
-          { key: "horse_number", label: "馬番" },
-          { key: "frame_number", label: "枠番" },
-          { key: "style_prediction", label: "脚質予測" }
-        ];
-
-        paramContainer.innerHTML = options.map(opt => `
-          <label style="display: inline-block; margin-right: 10px;">
-            <input type="checkbox" name="features[${index}][conditions][]" value="${opt.key}">
-            ${opt.label}
-          </label>
-        `).join('');
-      }
-    }
-
-    // 初期表示時に1行追加
-    window.addEventListener("DOMContentLoaded", () => {
-      addFeatureRow();
-    });
-  </script>
+  <!-- 外部JavaScriptファイルの読み込み -->
+  <script src="{% static 'js/feature.js' %}"></script>
 </head>
 <body>
   <h1>機械学習INPUTデータ作成</h1>
