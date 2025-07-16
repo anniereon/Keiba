@@ -1,3 +1,5 @@
+-- マスタテーブルの作成
+
 CREATE TABLE course (
     course_id VARCHAR(4) PRIMARY KEY,     -- コースID
     racecourse VARCHAR(20),           -- 競馬場
@@ -5,25 +7,38 @@ CREATE TABLE course (
     distance INT,                          -- 距離（メートルなど）
     direction VARCHAR(10)            -- 左右（left-handed / right-handed など）
 );
-select * from course;
 
 CREATE TABLE horse (
     horse_id VARCHAR(10) PRIMARY KEY,   -- 馬ID（主キー）
     horse_name VARCHAR(50)             -- 馬の名前
 );
-select * from horse;
 
 CREATE TABLE jockey (
     jockey_id VARCHAR(5) PRIMARY KEY,   -- 騎手ID（主キー）
     jockey_name VARCHAR(50)             -- 騎手名
 );
-select * from jockey;
 
 CREATE TABLE bet_type (
     bet_type_id VARCHAR(3) PRIMARY KEY,    -- 馬券種ID（例: WIN, EXA）
     bet_type_name VARCHAR(10)               -- 馬券種名（例: 単勝, 馬単）
 );
-select * from bet_type;
+
+CREATE TABLE weather (
+    weather_id VARCHAR(1) PRIMARY KEY,
+    weather_name VARCHAR(10)
+);
+
+CREATE TABLE track_condition (
+    track_condition_id VARCHAR(1) PRIMARY KEY,
+    track_condition_name VARCHAR(10)
+);
+
+CREATE TABLE style (
+    style_id VARCHAR(1) PRIMARY KEY,
+    style_name VARCHAR(10)
+);
+
+-- トランザクションテーブルの作成
 
 CREATE TABLE race (
     race_id VARCHAR(9) PRIMARY KEY,
@@ -31,13 +46,14 @@ CREATE TABLE race (
     num_horses INT,
     course_id VARCHAR(4),
     race_number INT,
-    weather VARCHAR(2),
-    track_condition VARCHAR(2),
+    weather_id VARCHAR(1),
+    track_condition_id VARCHAR(1),
     note TEXT,
-    
-    FOREIGN KEY (course_id) REFERENCES course(course_id)
+
+    FOREIGN KEY (course_id) REFERENCES course(course_id),
+    FOREIGN KEY (weather_id) REFERENCES weather(weather_id),
+    FOREIGN KEY (track_condition_id) REFERENCES track_condition(track_condition_id)
 );
-select * from race;
 
 CREATE TABLE race_detail (
     race_id VARCHAR(9),
@@ -45,18 +61,20 @@ CREATE TABLE race_detail (
     jockey_id VARCHAR(5),
     horse_number INT,
     frame_number INT,
-    style_prediction TEXT,
-    odds decimal(5, 1),
+    style_id VARCHAR(1),
+    odds DECIMAL(5,1),
     popularity INT,
     finish_rank INT,
     time_index INT,
     note TEXT,
-    PRIMARY KEY (race_id,  horse_number),
+    PRIMARY KEY (race_id, horse_number),
     FOREIGN KEY (race_id) REFERENCES race(race_id),
     FOREIGN KEY (horse_id) REFERENCES horse(horse_id),
-    FOREIGN KEY (jockey_id) REFERENCES jockey(jockey_id)
+    FOREIGN KEY (jockey_id) REFERENCES jockey(jockey_id),
+    FOREIGN KEY (style_id) REFERENCES style(style_id)
 );
-select * from race_detail;
+
+-- サマリテーブルの作成
 
 CREATE TABLE race_statistics (
     stat_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -65,14 +83,14 @@ CREATE TABLE race_statistics (
     course_id VARCHAR(4),
     num_horses INT,
     race_number INT,
-    weather VARCHAR(2),
+    weather_id VARCHAR(1),
     horse_number INT,
     frame_number INT,
-    style_prediction TEXT,
+    style_id VARCHAR(1),
     sample_size INT,
     num_place INT,
     num_win INT,
-    FOREIGN KEY (course_id) REFERENCES course(course_id)
+    FOREIGN KEY (course_id) REFERENCES course(course_id),
+    FOREIGN KEY (weather_id) REFERENCES weather(weather_id),
+    FOREIGN KEY (style_id) REFERENCES style(style_id)
 );
-select * from race_statistics;
-

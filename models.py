@@ -76,7 +76,6 @@ class Race(models.Model):
 class RaceDetail(models.Model):
     race = models.ForeignKey('Race', db_column='race_id', on_delete=models.DO_NOTHING, primary_key=True)
     horse_number = models.IntegerField()
-    # horse_id = models.CharField(max_length=10)
     horse = models.ForeignKey('Horse', db_column='horse_id', on_delete=models.DO_NOTHING)
     jockey = models.ForeignKey('Jockey', db_column='jockey_id', on_delete=models.DO_NOTHING)
     frame_number = models.IntegerField(null=True, blank=True)
