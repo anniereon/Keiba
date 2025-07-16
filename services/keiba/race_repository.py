@@ -2,16 +2,22 @@
 
 from keiba.models import Race, RaceDetail
 
-def get_race_ids_between(start_date, end_date):
-    return Race.objects.filter(
+def get_race_ids_between(start_date, end_date, num_horses=None):
+    queryset = Race.objects.filter(
         race_date__range=(start_date, end_date)
-    ).values_list('race_id', flat=True)
+    )
+    if num_horses is not None:
+        queryset = queryset.filter(num_horses=num_horses)
+    return queryset.values_list('race_id', flat=True)
 
-def get_race_details(race_ids):
-    # 必要なフィールドを拡張（weather_id, style_id など）
-    return RaceDetail.objects.filter(
+def get_race_details(race_ids, num_horses=None):
+    queryset = RaceDetail.objects.filter(
         race_id__in=race_ids
-    ).select_related('race').values(
+    ).select_related('race')
+    if num_horses is not None:
+        queryset = queryset.filter(race__num_horses=num_horses)
+
+    return queryset.values(
         'race_id',
         'horse_id',
         'horse_number',

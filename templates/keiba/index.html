@@ -5,60 +5,32 @@
   <meta charset="utf-8">
   <title>機械学習INPUTデータ作成</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-  <style>
-    .feature-row {
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .param-box input[type="number"] {
-      width: 60px;
-    }
-
-    .param-box label {
-      margin-right: 10px;
-    }
-
-    .form-container {
-      margin-top: 20px;
-    }
-  </style>
-
-  <!-- 外部JavaScriptファイルの読み込み -->
   <script src="{% static 'js/feature.js' %}"></script>
 </head>
 <body>
   <h1>機械学習INPUTデータ作成</h1>
-
   <div class="form-container">
-    <!-- 機能A: 特徴量CSVエクスポート -->
     <form method="post" action="">
       {% csrf_token %}
       <input type="hidden" name="action" value="export">
       <fieldset>
         <legend>機械学習INPUTデータ作成</legend>
-
         <label>
           期間：
           {{ feature_form.start_date }} から {{ feature_form.end_date }} まで
         </label><br><br>
-
-        <!-- ▼ ボタン群 -->
+        <label>
+          頭数：
+          {{ feature_form.num_horses }}
+        </label><br><br>
         <div>
           <button type="button" onclick="addFeatureRow()">追加</button>
           <button type="button" onclick="deleteSelectedRows()">削除</button>
           <button type="submit">実行</button>
         </div><br>
-
-        <!-- ▼ 特徴量入力欄 -->
         <div id="feature-container" style="margin-bottom: 10px;"></div>
       </fieldset>
     </form>
-
-    <!-- 機能B: 勝率集計（期間のみ） -->
     <form method="post" action="">
       {% csrf_token %}
       <input type="hidden" name="action" value="aggregate">
@@ -72,7 +44,6 @@
       </fieldset>
     </form>
   </div>
-
   {% if result %}
     <p>集計結果（{{ result.sample_size }} 件）を保存しました。</p>
   {% endif %}

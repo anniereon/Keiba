@@ -13,9 +13,10 @@ def index(request):
     if action == "export" and feature_form.is_valid():
         sd = feature_form.cleaned_data['start_date']
         ed = feature_form.cleaned_data['end_date']
+        nh = feature_form.cleaned_data.get('num_horses')  # 頭数を取得（None の可能性あり）
 
-        race_ids = race_repository.get_race_ids_between(sd, ed)
-        race_details = race_repository.get_race_details(race_ids)
+        race_ids = race_repository.get_race_ids_between(sd, ed, num_horses=nh)
+        race_details = race_repository.get_race_details(race_ids, num_horses=nh)
         race_date_map = race_repository.get_race_date_map(race_details)
 
         # 特徴量のリストを取得
