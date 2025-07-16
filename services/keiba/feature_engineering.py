@@ -7,7 +7,11 @@ def build_features(race_details, race_date_map, feature_spec_list):
 
     for rd in race_details:
         race_id = rd['race_id']
-        horse_id = rd['horse_id']
+        # horse_id = rd['horse_id']
+        horse_id = rd.get('horse_id')
+        if horse_id is None:
+            # horse_idがなければスキップ
+            continue
         horse_number = rd['horse_number']
         jockey_id = rd.get('jockey_id')
         race_date = race_date_map.get(race_id)
@@ -19,6 +23,10 @@ def build_features(race_details, race_date_map, feature_spec_list):
             'race_id': race_id,
             'horse_number': horse_number,
         }
+
+        # 全てのrace_detail + raceのカラムをrowに追加
+        for key, value in rd.items():
+            row[key] = value
 
         for idx, spec in enumerate(feature_spec_list):
             f_type = spec['type']
@@ -44,13 +52,13 @@ def build_features(race_details, race_date_map, feature_spec_list):
 
                 for cond in conditions:
                     if cond == 'course_id':
-                        filter_kwargs['course_id'] = rd.get('course_id')
+                        filter_kwargs['course_id'] = rd.get('race_course_id')
                     elif cond == 'num_horses':
-                        filter_kwargs['num_horses'] = rd.get('num_horses')
+                        filter_kwargs['num_horses'] = rd.get('race_num_horses')
                     elif cond == 'race_number':
-                        filter_kwargs['race_number'] = rd.get('race_number')
+                        filter_kwargs['race_number'] = rd.get('race_race_number')
                     elif cond == 'weather':
-                        filter_kwargs['weather_id'] = rd.get('weather_id')
+                        filter_kwargs['weather_id'] = rd.get('race_weather_id')
                     elif cond == 'frame_number':
                         filter_kwargs['frame_number'] = rd.get('frame_number')
                     elif cond == 'style_prediction':
