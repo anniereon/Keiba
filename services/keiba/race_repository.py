@@ -17,11 +17,11 @@ def get_race_details(race_ids):
         'horse_number',
         'jockey_id',
         'frame_number',
-        'style_id',              # ← 追加
+        'style_id',
         'race__course_id',
         'race__num_horses',
         'race__race_number',
-        'race__weather_id',      # ← 追加
+        'race__weather_id',
     )
 
 def get_race_date_map(race_details):

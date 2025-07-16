@@ -50,11 +50,11 @@ def build_features(race_details, race_date_map, feature_spec_list):
                     elif cond == 'race_number':
                         filter_kwargs['race_number'] = rd.get('race_number')
                     elif cond == 'weather':
-                        filter_kwargs['weather_id'] = rd.get('weather_id')  # ← 修正
+                        filter_kwargs['weather_id'] = rd.get('weather_id')
                     elif cond == 'frame_number':
                         filter_kwargs['frame_number'] = rd.get('frame_number')
                     elif cond == 'style_prediction':
-                        filter_kwargs['style_id'] = rd.get('style_id')      # ← 修正
+                        filter_kwargs['style_id'] = rd.get('style_id')
 
                 stats = RaceStatistics.objects.filter(**filter_kwargs).first()
                 if stats and stats.sample_size:
