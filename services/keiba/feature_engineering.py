@@ -5,29 +5,43 @@ from keiba.models import RaceStatistics
 def build_features(race_details, race_date_map, feature_spec_list):
     rows = []
 
-    for rd in race_details:
-        race_id = rd['race_id']
-        # horse_id = rd['horse_id']
-        horse_id = rd.get('horse_id')
-        if horse_id is None:
-            # horse_idがなければスキップ
-            continue
-        horse_number = rd['horse_number']
-        jockey_id = rd.get('jockey_id')
+    for rd in race_details:  # rd は RaceDetail モデルのインスタンス
+        race = rd.race
+        race_id = rd.race_id
+        horse_id = rd.horse_id
+        jockey_id = rd.jockey_id
+        horse_number = rd.horse_number
+        frame_number = rd.frame_number
+        style = getattr(rd, 'style', None)
         race_date = race_date_map.get(race_id)
 
         if not race_date:
             continue
 
         row = {
+            # --- race_detailの情報 ---
             'race_id': race_id,
+            'horse_id': horse_id,
+            'jockey_id': jockey_id,
             'horse_number': horse_number,
+            'frame_number': frame_number,
+            'odds': rd.odds,
+            'popularity': rd.popularity,
+            'finish_rank': rd.finish_rank,
+            'time_index': rd.time_index,
+            'note': rd.note,
+            'style_name': style.style_name if style else None,
+
+            # --- raceの情報 ---
+            'course_id': race.course_id,
+            'num_horses': race.num_horses,
+            'race_number': race.race_number,
+            'weather_name': getattr(race.weather, 'weather_name', None),
+            'track_condition_name': getattr(race.track_condition, 'track_condition_name', None),
+            'race_date': race.race_date,
         }
 
-        # 全てのrace_detail + raceのカラムをrowに追加
-        for key, value in rd.items():
-            row[key] = value
-
+        # 特徴量追加処理
         for idx, spec in enumerate(feature_spec_list):
             f_type = spec['type']
             col_name = f"{f_type}_{idx}"
@@ -52,17 +66,19 @@ def build_features(race_details, race_date_map, feature_spec_list):
 
                 for cond in conditions:
                     if cond == 'course_id':
-                        filter_kwargs['course_id'] = rd.get('race_course_id')
+                        filter_kwargs['course_id'] = race.course_id
                     elif cond == 'num_horses':
-                        filter_kwargs['num_horses'] = rd.get('race_num_horses')
+                        filter_kwargs['num_horses'] = race.num_horses
                     elif cond == 'race_number':
-                        filter_kwargs['race_number'] = rd.get('race_race_number')
+                        filter_kwargs['race_number'] = race.race_number
                     elif cond == 'weather':
-                        filter_kwargs['weather_id'] = rd.get('race_weather_id')
+                        filter_kwargs['weather_id'] = getattr(race.weather, 'weather_id', None)
+                    elif cond == 'track_condition':
+                        filter_kwargs['track_condition_id'] = getattr(race.track_condition, 'track_condition_id', None)
                     elif cond == 'frame_number':
-                        filter_kwargs['frame_number'] = rd.get('frame_number')
+                        filter_kwargs['frame_number'] = frame_number
                     elif cond == 'style_prediction':
-                        filter_kwargs['style_id'] = rd.get('style_id')
+                        filter_kwargs['style_id'] = rd.style_id
 
                 stats = RaceStatistics.objects.filter(**filter_kwargs).first()
                 if stats and stats.sample_size:
