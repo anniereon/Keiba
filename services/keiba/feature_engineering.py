@@ -5,7 +5,7 @@ from keiba.models import RaceStatistics
 def build_features(race_details, race_date_map, feature_spec_list):
     rows = []
 
-    for rd in race_details:  # rd は RaceDetail モデルのインスタンス
+    for rd in race_details:
         race = rd.race
         race_id = rd.race_id
         horse_id = rd.horse_id
@@ -16,10 +16,9 @@ def build_features(race_details, race_date_map, feature_spec_list):
         race_date = race_date_map.get(race_id)
 
         if not race_date:
-            continue
+            continue  # これは race_date_map に含まれていないので除外でOK
 
         row = {
-            # --- race_detailの情報 ---
             'race_id': race_id,
             'horse_id': horse_id,
             'jockey_id': jockey_id,
@@ -31,8 +30,6 @@ def build_features(race_details, race_date_map, feature_spec_list):
             'time_index': rd.time_index,
             'note': rd.note,
             'style_name': style.style_name if style else None,
-
-            # --- raceの情報 ---
             'course_id': race.course_id,
             'num_horses': race.num_horses,
             'race_number': race.race_number,
@@ -41,19 +38,24 @@ def build_features(race_details, race_date_map, feature_spec_list):
             'race_date': race.race_date,
         }
 
-        # 特徴量追加処理
         for idx, spec in enumerate(feature_spec_list):
             f_type = spec['type']
             col_name = f"{f_type}_{idx}"
 
             if f_type == 'time_index_average':
                 n = spec.get('param', 3)
-                value = get_time_index_average(horse_id, race_date, n)
+                if horse_id and race_date:
+                    value = get_time_index_average(horse_id, race_date, n)
+                else:
+                    value = None  # ← horse_idが無ければNoneで代用
                 row[col_name] = value
 
             elif f_type == 'jockey_place_rate':
                 n = spec.get('param', 3)
-                value = get_jockey_place_rate(jockey_id, race_date, n)
+                if jockey_id and race_date:
+                    value = get_jockey_place_rate(jockey_id, race_date, n)
+                else:
+                    value = None
                 row[col_name] = value
 
             elif f_type == 'conditional_place_rate':
@@ -92,6 +94,6 @@ def build_features(race_details, race_date_map, feature_spec_list):
 
     for col in df.columns:
         if col.startswith("jockey_place_rate") or col.startswith("conditional_place_rate"):
-            df[col] = df[col].fillna(0.0)
+            df[col] = df[col].fillna(0.0)  # ← NULLは0.0に変換（好みに応じて）
 
     return df

@@ -13,12 +13,26 @@ def get_race_details(race_ids, num_horses=None):
         'race', 'race__weather', 'race__track_condition', 'style'
     ).filter(race_id__in=race_ids)
 
-    if num_horses:
-        qs = qs.filter(race__num_horses=num_horses)
+    # if num_horses:
+    #     qs = qs.filter(race__num_horses=num_horses)
 
     return qs
 
+# def get_race_date_map(race_details):
+#     race_ids = [rd.race_id for rd in race_details]  # ← 修正：辞書でなく属性アクセス
+#     race_dates = Race.objects.filter(race_id__in=race_ids).values('race_id', 'race_date')
+#     return {r['race_id']: r['race_date'] for r in race_dates}
+
 def get_race_date_map(race_details):
-    race_ids = [rd.race_id for rd in race_details]  # ← 修正：辞書でなく属性アクセス
+    race_ids = [rd.race_id for rd in race_details]  # ← ここは元のコードと同じ
+
+    # 👇 追加：race_detail 側のユニークな race_id 数
+    print(f"[DEBUG] race_detail に含まれるユニークな race_id 件数: {len(set(race_ids))}")
+
     race_dates = Race.objects.filter(race_id__in=race_ids).values('race_id', 'race_date')
+
+    # 👇 追加：race テーブルから取得できた件数（= race_date_map に入る件数）
+    print(f"[DEBUG] race_date_map に含まれる race_id 件数: {race_dates.count()}")
+
     return {r['race_id']: r['race_date'] for r in race_dates}
+
