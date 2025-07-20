@@ -66,7 +66,7 @@ class Race(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, db_column='course_id')
     race_number = models.IntegerField()
     weather = models.ForeignKey(Weather, on_delete=models.DO_NOTHING, db_column='weather_id')
-    track_condition = models.ForeignKey(TrackCondition, on_delete=models.DO_NOTHING, db_column='track_condition_id')
+    track_condition = models.ForeignKey(TrackCondition, null=True, on_delete=models.DO_NOTHING, db_column='track_condition_id')
     note = models.TextField(null=True)
 
     class Meta:
