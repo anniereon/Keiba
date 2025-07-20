@@ -18,11 +18,6 @@ def get_race_details(race_ids, num_horses=None):
 
     return qs
 
-# def get_race_date_map(race_details):
-#     race_ids = [rd.race_id for rd in race_details]  # ← 修正：辞書でなく属性アクセス
-#     race_dates = Race.objects.filter(race_id__in=race_ids).values('race_id', 'race_date')
-#     return {r['race_id']: r['race_date'] for r in race_dates}
-
 def get_race_date_map(race_details):
     race_ids = [rd.race_id for rd in race_details]  # ← ここは元のコードと同じ
 
