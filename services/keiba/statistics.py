@@ -11,6 +11,10 @@ def aggregate_statistics(filters):
     stats_map = {}
 
     for d in details:
+
+        if d.finish_rank is None:
+            continue
+
         key = (
             d.race.course_id,
             d.race.num_horses,
