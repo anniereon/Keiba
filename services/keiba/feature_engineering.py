@@ -53,7 +53,7 @@ def build_features(race_details, race_date_map, feature_spec_list):
             elif f_type == 'jockey_place_rate':
                 n = spec.get('param', 3)
                 if jockey_id and race_date:
-                    value = get_jockey_place_rate(jockey_id, race_date, n)
+                    value = get_jockey_place_rate(jockey_id, race_date, race.race_number, n)
                 else:
                     value = None
                 row[col_name] = value
