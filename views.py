@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from keiba.forms import DateRangeForm, StatisticsFilterForm
 from keiba.services.keiba import race_repository, feature_engineering, statistics
-from keiba.services.csv.export import create_csv_response_from_df
+from keiba.services.export.export import create_csv_response_from_df
 
 def index(request):
     action = request.POST.get("action")
