@@ -85,6 +85,15 @@ class RaceDetail(models.Model):
     finish_rank = models.IntegerField(null=True, blank=True)
     time_index = models.IntegerField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
+    position_1 = models.IntegerField(null=True, blank=True)
+    position_2 = models.IntegerField(null=True, blank=True)
+    position_3 = models.IntegerField(null=True, blank=True)
+    position_4 = models.IntegerField(null=True, blank=True)
+    weight = models.IntegerField(null=True, blank=True)
+    weight_delta = models.IntegerField(null=True, blank=True)
+    impost = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    last_3_furlongs = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    finish_time = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
 
     class Meta:
         managed = False
